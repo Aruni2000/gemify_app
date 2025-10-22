@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "867553853394",
+    "firebase_url": "https://gemify-app-default-rtdb.firebaseio.com",
+    "project_id": "gemify-app",
+    "storage_bucket": "gemify-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:867553853394:android:d672b0513cdaf49233120b",
+        "android_client_info": {
+          "package_name": "com.example.gemify"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHKOwbJmq8nJXg7GQ83ByNqPpE64ip5VU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:867553853394:android:87dd4a805bf0493b33120b",
+        "android_client_info": {
+          "package_name": "com.example.gemify_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHKOwbJmq8nJXg7GQ83ByNqPpE64ip5VU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
