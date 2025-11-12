@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gemify/screens/home_page.dart';
 import 'theme/gemify_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'screens/welcome.dart';
@@ -30,7 +31,7 @@ class GemifyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       // Choose one of the following:
-      home: const WelcomeScreen(), // ✅ Show welcome/onboarding/login first
+      home: const HomePage(), // ✅ Show welcome/onboarding/login first
       // OR
       // home: const BottomNavBar(), // ✅ Skip welcome and go directly to main app
     );

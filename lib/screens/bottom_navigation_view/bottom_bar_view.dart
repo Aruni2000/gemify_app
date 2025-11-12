@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
 
 class BottomBarView extends StatelessWidget {
   /// Current selected index (0-4)
@@ -18,69 +17,52 @@ class BottomBarView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
+        color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 20,
-            offset: const Offset(0, -5),
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
           ),
         ],
-      ),
-      child: ClipRRect(
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(28),
-          topRight: Radius.circular(28),
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
         ),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.95),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(28),
-                topRight: Radius.circular(28),
+      ),
+      child: SafeArea(
+        child: Container(
+          height: 65,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _buildNavItem(icon: Icons.home_rounded, label: 'Home', index: 0),
+              _buildNavItem(
+                icon: Icons.inventory_2_rounded,
+                label: 'Inventory',
+                index: 1,
               ),
-            ),
-            child: SafeArea(
-              child: Container(
-                height: 65,
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    _buildNavItem(
-                      icon: Icons.home_rounded,
-                      label: 'Home',
-                      index: 0,
-                    ),
-                    _buildNavItem(
-                      icon: Icons.inventory_2_rounded,
-                      label: 'Inventory',
-                      index: 1,
-                    ),
-                    _buildCenterButton(),
-                    _buildNavItem(
-                      icon: Icons.shopping_bag_rounded,
-                      label: 'Shop',
-                      index: 3,
-                    ),
-                    _buildNavItem(
-                      icon: Icons.campaign_rounded,
-                      label: 'Offers',
-                      index: 4,
-                    ),
-                  ],
-                ),
+              _buildCenterButton(),
+              _buildNavItem(
+                icon: Icons.shopping_bag_rounded,
+                label: 'Shop',
+                index: 3,
               ),
-            ),
+              _buildNavItem(
+                icon: Icons.campaign_rounded,
+                label: 'Offers',
+                index: 4,
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  /// Build regular navigation item
+  /// Build minimalist navigation item with label
   Widget _buildNavItem({
     required IconData icon,
     required String label,
@@ -92,37 +74,45 @@ class BottomBarView extends StatelessWidget {
       child: GestureDetector(
         onTap: () => onTap(index),
         behavior: HitTestBehavior.opaque,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 2),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
                 color: isSelected
-                    ? const Color(0xFF2D3142)
-                    : const Color(0xFF2D3142).withOpacity(0.4),
-                size: 24,
+                    ? const Color.fromARGB(255, 28, 31, 112).withOpacity(0.15)
+                    : Colors.transparent,
+                shape: BoxShape.circle,
               ),
-              const SizedBox(height: 4),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+              child: Center(
+                child: Icon(
+                  icon,
                   color: isSelected
-                      ? const Color(0xFF2D3142)
+                      ? const Color.fromARGB(255, 34, 16, 99)
                       : const Color(0xFF2D3142).withOpacity(0.4),
-                  letterSpacing: 0,
-                  height: 1.0,
+                  size: 22,
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
               ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 9,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                color: isSelected
+                    ? const Color.fromARGB(255, 20, 18, 94)
+                    : const Color(0xFF2D3142).withOpacity(0.5),
+                letterSpacing: 0,
+                height: 1.0,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
         ),
       ),
     );
@@ -135,34 +125,27 @@ class BottomBarView extends StatelessWidget {
     return GestureDetector(
       onTap: () => onTap(2),
       child: Container(
-        width: 56,
-        height: 56,
+        width: 50,
+        height: 50,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: isSelected
-                ? [
-                    const Color.fromARGB(255, 172, 188, 255),
-                    Color.fromARGB(255, 142, 162, 250),
-                  ]
-                : [
-                    const Color.fromARGB(255, 172, 188, 255),
-                    const Color.fromARGB(255, 142, 162, 250).withOpacity(0.85),
-                  ],
+            colors: [
+              const Color.fromARGB(255, 172, 188, 255),
+              const Color.fromARGB(255, 142, 162, 250),
+            ],
           ),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
-              color: isSelected
-                  ? Color.fromARGB(255, 172, 188, 255)
-                  : const Color.fromARGB(255, 142, 162, 250).withOpacity(0.85),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
+              color: const Color.fromARGB(255, 155, 132, 234).withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
             ),
           ],
         ),
-        child: const Icon(Icons.add_rounded, color: Colors.white, size: 28),
+        child: const Icon(Icons.add_rounded, color: Colors.white, size: 26),
       ),
     );
   }

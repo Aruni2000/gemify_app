@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gemify/gems/gem_list_screen.dart';
 import 'package:gemify/shop/gem_details_screen.dart';
 import 'package:gemify/shop/shop_create.dart';
 import 'dart:ui';
@@ -26,7 +27,7 @@ class _HomePageState extends State<HomePage> {
   // List of pages for each tab
   final List<Widget> _pages = [
     const HomeContent(), // Home tab content
-    const InventoryPlaceholder(), // Inventory tab
+    const GemListScreen(), // Inventory tab
     const AddGemScreen(), // Add Gem tab
     const ShopCreateScreen(), // Shop tab now redirects to create shop
     const AnnouncementScreen(), // Announcement tab
@@ -69,6 +70,26 @@ class _HomeContentState extends State<HomeContent> {
     "Emerald",
     "Diamond",
   ];
+
+  // 🎯 PageController for announcement slider
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
+
+  // 📋 List of announcement banners
+  final List<Map<String, String>> announcements = [
+    {'image': 'assets/announcements/banner1.png', 'title': 'Special Offer'},
+    {'image': 'assets/announcements/banner2.png', 'title': 'New Arrivals'},
+    {
+      'image': 'assets/announcements/banner3.png',
+      'title': 'Premium Collection',
+    },
+  ];
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -237,151 +258,191 @@ class _HomeContentState extends State<HomeContent> {
 
               const SizedBox(height: 4),
 
-              // 🔹 RECOMMENDED SECTION
+              // 🔹 RECOMMENDED SECTION WITH SLIDER
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    const Text(
+                      "Recommended",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF2D3142),
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // 🎠 ANNOUNCEMENT SLIDER WITH DOTS
+                    Column(
                       children: [
-                        const Text(
-                          "Recommended",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF2D3142),
-                            letterSpacing: 0.3,
+                        // PageView Slider
+                        SizedBox(
+                          height: 180,
+                          child: PageView.builder(
+                            controller: _pageController,
+                            onPageChanged: (index) {
+                              setState(() {
+                                _currentPage = index;
+                              });
+                            },
+                            itemCount: announcements.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 4,
+                                ),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const AnnouncementScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          blurRadius: 20,
+                                          offset: const Offset(0, 8),
+                                        ),
+                                      ],
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: Stack(
+                                        children: [
+                                          // Background Image
+                                          Positioned.fill(
+                                            child: Image.asset(
+                                              announcements[index]['image']!,
+                                              fit: BoxFit.cover,
+                                              errorBuilder:
+                                                  (context, error, stackTrace) {
+                                                    return Container(
+                                                      decoration: BoxDecoration(
+                                                        gradient:
+                                                            LinearGradient(
+                                                              colors: [
+                                                                Colors
+                                                                    .purple
+                                                                    .shade300,
+                                                                Colors
+                                                                    .blue
+                                                                    .shade300,
+                                                              ],
+                                                            ),
+                                                      ),
+                                                      child: Center(
+                                                        child: Icon(
+                                                          Icons
+                                                              .campaign_outlined,
+                                                          size: 64,
+                                                          color: Colors.white
+                                                              .withOpacity(0.7),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                            ),
+                                          ),
+
+                                          // Gradient Overlay
+                                          Positioned.fill(
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  begin: Alignment.topCenter,
+                                                  end: Alignment.bottomCenter,
+                                                  colors: [
+                                                    Colors.transparent,
+                                                    Colors.black.withOpacity(
+                                                      0.3,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+
+                                          // View Details Button
+                                          Positioned(
+                                            bottom: 12,
+                                            right: 12,
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              child: BackdropFilter(
+                                                filter: ImageFilter.blur(
+                                                  sigmaX: 10,
+                                                  sigmaY: 10,
+                                                ),
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 14,
+                                                        vertical: 8,
+                                                      ),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white
+                                                        .withOpacity(0.9),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          10,
+                                                        ),
+                                                  ),
+                                                  child: const Text(
+                                                    "View Details",
+                                                    style: TextStyle(
+                                                      color: Color(0xFF2D3142),
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const ShopHomeScreen(),
+
+                        const SizedBox(height: 12),
+
+                        // 🔵 DOT INDICATORS
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(
+                            announcements.length,
+                            (index) => AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              margin: const EdgeInsets.symmetric(horizontal: 4),
+                              width: _currentPage == index ? 24 : 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: _currentPage == index
+                                    ? const Color(0xFF2D3142)
+                                    : const Color(0xFF2D3142).withOpacity(0.3),
+                                borderRadius: BorderRadius.circular(4),
                               ),
-                            );
-                          },
-                          child: Text(
-                            "See all",
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.blue.shade600,
                             ),
                           ),
                         ),
                       ],
-                    ),
-                    const SizedBox(height: 2),
-
-                    // ANNOUNCEMENT BANNER CARD
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const AnnouncementScreen(),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        height: 180,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 20,
-                              offset: const Offset(0, 8),
-                            ),
-                          ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Stack(
-                            children: [
-                              // Background Image
-                              Positioned.fill(
-                                child: Image.asset(
-                                  "assets/announcements/banner1.png",
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            Colors.purple.shade300,
-                                            Colors.blue.shade300,
-                                          ],
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Icon(
-                                          Icons.campaign_outlined,
-                                          size: 64,
-                                          color: Colors.white.withOpacity(0.7),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-
-                              // Gradient Overlay
-                              Positioned.fill(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: [
-                                        Colors.transparent,
-                                        Colors.black.withOpacity(0.3),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-
-                              // View Details Button
-                              Positioned(
-                                bottom: 12,
-                                right: 12,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: BackdropFilter(
-                                    filter: ImageFilter.blur(
-                                      sigmaX: 10,
-                                      sigmaY: 10,
-                                    ),
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 14,
-                                        vertical: 8,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white.withOpacity(0.9),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: const Text(
-                                        "View Details",
-                                        style: TextStyle(
-                                          color: Color(0xFF2D3142),
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
                     ),
                   ],
                 ),
@@ -417,7 +478,7 @@ class _HomeContentState extends State<HomeContent> {
                             );
                           },
                           child: Text(
-                            "Add New",
+                            "view all",
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -509,7 +570,7 @@ class _HomeContentState extends State<HomeContent> {
 
                     const SizedBox(height: 16),
 
-                    // Gem Grid
+                    // Gem Grid - Image Focused
                     GridView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -518,12 +579,13 @@ class _HomeContentState extends State<HomeContent> {
                             crossAxisCount: 2,
                             crossAxisSpacing: 14,
                             mainAxisSpacing: 14,
-                            childAspectRatio: 0.75,
+                            childAspectRatio:
+                                0.85, // Adjusted for better image focus
                           ),
                       itemCount: gemsList.length > 1 ? gemsList.length - 1 : 0,
                       itemBuilder: (context, index) {
                         final gem = gemsList[index + 1];
-                        return _buildTravelStyleGemCard(context, gem, index);
+                        return _buildImageFocusedGemCard(context, gem, index);
                       },
                     ),
                   ],
@@ -538,12 +600,10 @@ class _HomeContentState extends State<HomeContent> {
     );
   }
 
-  // 🎨 TRAVEL-STYLE GEM CARD
-
-  Widget _buildTravelStyleGemCard(BuildContext context, Gem gem, int index) {
+  // 🎨 IMAGE-FOCUSED GEM CARD - Simplified & Clean
+  Widget _buildImageFocusedGemCard(BuildContext context, Gem gem, int index) {
     return GestureDetector(
       onTap: () {
-        // Navigate to gem details page with the selected gem
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => GemDetailsScreen(gem: gem)),
@@ -551,20 +611,20 @@ class _HomeContentState extends State<HomeContent> {
       },
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.08),
-              blurRadius: 16,
-              offset: const Offset(0, 6),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(20),
           child: Stack(
             children: [
-              // Background Image
+              // 🖼️ MAIN IMAGE - Takes full card space
               Positioned.fill(
                 child: Image.asset(
                   gem.image,
@@ -584,150 +644,146 @@ class _HomeContentState extends State<HomeContent> {
                 ),
               ),
 
-              // Gradient Overlay
-              Positioned.fill(
+              // Subtle gradient at bottom only
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
                 child: Container(
+                  height: 60,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
                         Colors.transparent,
-                        Colors.black.withOpacity(0.6),
+                        Colors.black.withOpacity(0.5),
                       ],
                     ),
                   ),
                 ),
               ),
 
-              // Rating Badge
+              // ⭐ Top Right - Rating Badge (Small & Minimal)
               Positioned(
-                top: 12,
-                left: 12,
+                top: 8,
+                right: 8,
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(8),
                   child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                    filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 5,
+                        horizontal: 6,
+                        vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.black.withOpacity(0.25),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.star, color: Colors.amber, size: 14),
-                          const SizedBox(width: 3),
+                          const Icon(Icons.star, color: Colors.amber, size: 11),
+                          const SizedBox(width: 2),
                           Text(
-                            "${4.5 + (index * 0.1)}",
+                            "${(4.5 + (index * 0.1)).toStringAsFixed(1)}",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              // ❤️ Top Left - Heart Icon (Small & Minimal)
+              Positioned(
+                top: 8,
+                left: 8,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.25),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.favorite_border,
+                        color: Colors.white,
+                        size: 14,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              // 📝 Bottom - Minimal Info
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 8,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Gem Name - Single line
+                      Text(
+                        gem.name,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.2,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 3),
+
+                      // Price & Collection in one line
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // Price
+                          Text(
+                            gem.price,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 12,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
 
-              // Favorite Button
-              Positioned(
-                top: 12,
-                right: 12,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                    child: Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Icon(
-                        Icons.favorite_border,
-                        color: Colors.white,
-                        size: 18,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
-              // Bottom Details
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        gem.name,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.3,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            gem.price,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w800,
+                          // Collection badge
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
                             ),
-                          ),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                              child: Container(
-                                padding: const EdgeInsets.all(6),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.2),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.arrow_forward,
-                                  color: Colors.white,
-                                  size: 14,
-                                ),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              "Premium",
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.95),
+                                fontSize: 9,
+                                fontWeight: FontWeight.w600,
                               ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 3),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.location_on_outlined,
-                            color: Colors.white.withOpacity(0.8),
-                            size: 13,
-                          ),
-                          const SizedBox(width: 3),
-                          Text(
-                            "Premium Collection",
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.9),
-                              fontSize: 11,
-                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ],

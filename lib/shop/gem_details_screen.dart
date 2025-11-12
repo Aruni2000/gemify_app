@@ -15,6 +15,24 @@ class GemDetailsScreen extends StatefulWidget {
 
 class _GemDetailsScreenState extends State<GemDetailsScreen> {
   bool isFavorite = false;
+  final PageController _pageController = PageController();
+  int _currentImageIndex = 0;
+
+  // List of images for the slider (you can add more images here)
+  late List<String> _images;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize with 4 instances of the gem image (you can replace with different images)
+    _images = List.generate(4, (index) => widget.gem.image);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,31 +45,42 @@ class _GemDetailsScreenState extends State<GemDetailsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Hero Image Section
+                // Hero Image Slider Section
                 Stack(
                   children: [
-                    // Main Image
-                    Container(
+                    // Image Slider
+                    SizedBox(
                       height: MediaQuery.of(context).size.height * 0.45,
                       width: double.infinity,
-                      child: Image.asset(
-                        widget.gem.image,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.purple.shade300,
-                                  Colors.blue.shade300,
-                                ],
-                              ),
-                            ),
-                            child: const Icon(
-                              Icons.diamond,
-                              size: 80,
-                              color: Colors.white,
-                            ),
+                      child: PageView.builder(
+                        controller: _pageController,
+                        onPageChanged: (index) {
+                          setState(() {
+                            _currentImageIndex = index;
+                          });
+                        },
+                        itemCount: _images.length,
+                        itemBuilder: (context, index) {
+                          return Image.asset(
+                            _images[index],
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.purple.shade300,
+                                      Colors.blue.shade300,
+                                    ],
+                                  ),
+                                ),
+                                child: const Icon(
+                                  Icons.diamond,
+                                  size: 80,
+                                  color: Colors.white,
+                                ),
+                              );
+                            },
                           );
                         },
                       ),
@@ -69,6 +98,38 @@ class _GemDetailsScreenState extends State<GemDetailsScreen> {
                             Colors.transparent,
                             Colors.white,
                           ],
+                        ),
+                      ),
+                    ),
+
+                    // Page Indicator
+                    Positioned(
+                      bottom: 20,
+                      left: 0,
+                      right: 0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          _images.length,
+                          (index) => AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            height: 8,
+                            width: _currentImageIndex == index ? 24 : 8,
+                            decoration: BoxDecoration(
+                              color: _currentImageIndex == index
+                                  ? Colors.white
+                                  : Colors.white.withOpacity(0.4),
+                              borderRadius: BorderRadius.circular(4),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -481,62 +542,6 @@ class _GemDetailsScreenState extends State<GemDetailsScreen> {
                                   ],
                                 ),
                               ),
-                            ),
-                          ),
-
-                          const SizedBox(height: 20),
-
-                          // Gallery Title
-                          const Text(
-                            "Gallery",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xFF2D3142),
-                            ),
-                          ),
-
-                          const SizedBox(height: 12),
-
-                          // Gallery Images
-                          SizedBox(
-                            height: 80,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: 4,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 10),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Container(
-                                      width: 100,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Colors.grey.shade300,
-                                          width: 1.5,
-                                        ),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Image.asset(
-                                        widget.gem.image,
-                                        fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                              return Container(
-                                                color: Colors.grey.shade200,
-                                                child: Icon(
-                                                  Icons.image,
-                                                  color: Colors.grey.shade400,
-                                                  size: 30,
-                                                ),
-                                              );
-                                            },
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
                             ),
                           ),
 
