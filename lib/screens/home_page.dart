@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gemify/gems/gem_list_screen.dart';
+import 'package:gemify/screens/settings/settings_screen.dart';
 import 'package:gemify/shop/gem_details_screen.dart';
 import 'package:gemify/shop/shop_create.dart';
 import 'dart:ui';
@@ -36,7 +37,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
+      backgroundColor: Colors.white, // Changed to white
       // Display current page based on selected tab
       body: _pages[_currentIndex],
 
@@ -94,18 +95,7 @@ class _HomeContentState extends State<HomeContent> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            const Color(0xFFE8EAF6),
-            const Color(0xFFF3E5F5),
-            const Color(0xFFE1F5FE),
-            const Color(0xFFFCE4EC),
-          ],
-        ),
-      ),
+      color: Colors.white, // Changed to white background
       child: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -124,21 +114,33 @@ class _HomeContentState extends State<HomeContent> {
                       children: [
                         Row(
                           children: [
-                            ClipOval(
-                              child: Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.purple.shade300,
-                                      Colors.blue.shade300,
-                                    ],
+                            // 🔹 WRAPPED WITH GESTUREDETECTOR FOR NAVIGATION
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SettingsScreen(),
                                   ),
-                                ),
-                                child: const Icon(
-                                  Icons.person,
-                                  color: Colors.white,
+                                );
+                              },
+                              child: ClipOval(
+                                child: Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Colors.purple.shade300,
+                                        Colors.blue.shade300,
+                                      ],
+                                    ),
+                                  ),
+                                  child: const Icon(
+                                    Icons.person,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),
@@ -187,69 +189,58 @@ class _HomeContentState extends State<HomeContent> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(14),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.6),
-                              borderRadius: BorderRadius.circular(14),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(
+                            0xFFF5F7FA,
+                          ), // Light gray background
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: const Color(0xFFE8EAF6),
+                            width: 1,
+                          ),
+                        ),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: "Search gems...",
+                            hintStyle: TextStyle(
+                              color: Color(0xFF2D3142).withOpacity(0.4),
+                              fontSize: 14,
                             ),
-                            child: TextField(
-                              decoration: InputDecoration(
-                                hintText: "Search gems...",
-                                hintStyle: TextStyle(
-                                  color: Color(0xFF2D3142).withOpacity(0.4),
-                                  fontSize: 14,
-                                ),
-                                prefixIcon: Icon(
-                                  Icons.search,
-                                  color: Color(0xFF2D3142).withOpacity(0.5),
-                                  size: 22,
-                                ),
-                                border: InputBorder.none,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 14,
-                                ),
-                              ),
+                            prefixIcon: Icon(
+                              Icons.search,
+                              color: Color(0xFF2D3142).withOpacity(0.5),
+                              size: 22,
+                            ),
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 14,
                             ),
                           ),
                         ),
                       ),
                     ),
                     const SizedBox(width: 12),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                        child: Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF2D3142),
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.15),
-                                blurRadius: 10,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: const Color(
+                          0xFF3D5A80,
+                        ), // Dark blue like screenshot
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.15),
+                            blurRadius: 10,
+                            offset: const Offset(0, 2),
                           ),
-                          child: const Icon(
-                            Icons.tune,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.tune,
+                        color: Colors.white,
+                        size: 20,
                       ),
                     ),
                   ],
@@ -435,8 +426,8 @@ class _HomeContentState extends State<HomeContent> {
                               height: 8,
                               decoration: BoxDecoration(
                                 color: _currentPage == index
-                                    ? const Color(0xFF2D3142)
-                                    : const Color(0xFF2D3142).withOpacity(0.3),
+                                    ? const Color(0xFF3D5A80) // Dark blue
+                                    : const Color(0xFF3D5A80).withOpacity(0.3),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                             ),
@@ -507,59 +498,54 @@ class _HomeContentState extends State<HomeContent> {
                                   selectedCategory = category;
                                 });
                               },
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: BackdropFilter(
-                                  filter: ImageFilter.blur(
-                                    sigmaX: 10,
-                                    sigmaY: 10,
-                                  ),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 20,
-                                      vertical: 10,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 10,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: isSelected
+                                      ? const Color(
+                                          0xFF3D5A80,
+                                        ) // Dark blue when selected
+                                      : const Color(
+                                          0xFFF5F7FA,
+                                        ), // Light gray when unselected
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.06),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
                                     ),
-                                    decoration: BoxDecoration(
+                                  ],
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      _getCategoryIcon(category),
+                                      size: 18,
                                       color: isSelected
-                                          ? const Color(0xFF2D3142)
-                                          : Colors.white.withOpacity(0.5),
-                                      borderRadius: BorderRadius.circular(20),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.06),
-                                          blurRadius: 8,
-                                          offset: const Offset(0, 2),
-                                        ),
-                                      ],
+                                          ? Colors.white
+                                          : const Color(
+                                              0xFF2D3142,
+                                            ).withOpacity(0.7),
                                     ),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          _getCategoryIcon(category),
-                                          size: 18,
-                                          color: isSelected
-                                              ? Colors.white
-                                              : const Color(
-                                                  0xFF2D3142,
-                                                ).withOpacity(0.7),
-                                        ),
-                                        const SizedBox(width: 6),
-                                        Text(
-                                          category,
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color: isSelected
-                                                ? Colors.white
-                                                : const Color(
-                                                    0xFF2D3142,
-                                                  ).withOpacity(0.7),
-                                            letterSpacing: 0.2,
-                                          ),
-                                        ),
-                                      ],
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      category,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: isSelected
+                                            ? Colors.white
+                                            : const Color(
+                                                0xFF2D3142,
+                                              ).withOpacity(0.7),
+                                        letterSpacing: 0.2,
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -822,13 +808,7 @@ class InventoryPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [const Color(0xFFE8EAF6), const Color(0xFFF3E5F5)],
-        ),
-      ),
+      color: Colors.white, // Changed to white
       child: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
